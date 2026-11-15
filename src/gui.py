@@ -181,7 +181,7 @@ class PS2toPKGApp:
 
         # Configuración del emulador y gráficos
         self.gs_render_var = tk.StringVar(value="2x2")
-        self.gs_scale_var = tk.StringVar(value="EdgeSmooth")
+        self.gs_scale_var = tk.StringVar(value="edgesmooth")
         self.fullscreen_var = tk.BooleanVar(value=True)
         self.trophies_var = tk.BooleanVar(value=False)
         self.widescreen_var = tk.BooleanVar(value=True)
@@ -437,10 +437,10 @@ class PS2toPKGApp:
             row=row, column=0, sticky=tk.W, pady=6)
         combo_render = ttk.Combobox(
             frm_main, textvariable=self.gs_render_var,
-            values=["1x1", "2x2", "3x3", "4x4"], state="readonly", width=18
+            values=["none", "2x2"], state="readonly", width=18
         )
         combo_render.grid(row=row, column=1, sticky=tk.W, pady=6, padx=(10, 0))
-        ttk.Label(frm_main, text="(2x2 = 1080p FHD, 3x3 = 1440p 2K, 4x4 = 4K UHD)",
+        ttk.Label(frm_main, text="(2x2 = Super-sampling 1080p, none = Nativo)",
                   foreground=_FG_DIM, font=(_FONT_FAMILY, 8)).grid(
             row=row, column=2, sticky=tk.W, padx=(10, 0))
         row += 1
@@ -450,11 +450,11 @@ class PS2toPKGApp:
             row=row, column=0, sticky=tk.W, pady=6)
         combo_scale = ttk.Combobox(
             frm_main, textvariable=self.gs_scale_var,
-            values=["EdgeSmooth", "Bilinear", "None"], state="readonly",
+            values=["edgesmooth", "motionvec", "gpu", "none"], state="readonly",
             width=18
         )
         combo_scale.grid(row=row, column=1, sticky=tk.W, pady=6, padx=(10, 0))
-        ttk.Label(frm_main, text="(EdgeSmooth suaviza bordes de sierra)",
+        ttk.Label(frm_main, text="(edgesmooth suaviza bordes, motionvec añade anti-ghosting)",
                   foreground=_FG_DIM, font=(_FONT_FAMILY, 8)).grid(
             row=row, column=2, sticky=tk.W, padx=(10, 0))
         row += 1
@@ -845,6 +845,7 @@ class PS2toPKGApp:
 
             emu_config = EmulatorConfig(
                 ps2_title_id=game_id or "SLUS-20946",
+                num_discs=len(self.iso_paths),
                 gs_render=self.gs_render_var.get(),
                 gs_scale=self.gs_scale_var.get(),
                 fullscreen=self.fullscreen_var.get(),
@@ -994,7 +995,7 @@ class PS2toPKGApp:
             return
 
         # Aplicar parches a la caja de texto
-        patches = config.get("patches", "")
+        patches = "\n".join(config.get("config_lines", []))
         if patches:
             self.txt_patches.delete("1.0", tk.END)
             self.txt_patches.insert("1.0", patches)
