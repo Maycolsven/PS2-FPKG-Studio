@@ -1,4 +1,4 @@
-# 🎮 PS2toPS4-fPKG-Studio
+# 🎮 PS2-FPKG-Studio
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-PS4%20%7C%20GoldHEN-blue?style=for-the-badge&logo=playstation" alt="Platform">
